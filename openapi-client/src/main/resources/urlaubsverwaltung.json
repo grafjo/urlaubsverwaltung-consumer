@@ -1,0 +1,1123 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Urlaubsverwaltung API",
+    "description": "This rest API provides the possibility to fetch information about absences, availabilities, persons, public holidays, sicknotes, vacations and many more...",
+    "contact": {
+      "name": "Urlaubsverwaltung",
+      "url": "https://github.com/synyx/urlaubsverwaltung",
+      "email": "urlaubsverwaltung@synyx.de"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://github.com/synyx/urlaubsverwaltung/blob/master/LICENSE.txt"
+    },
+    "version": "4.4.0-SNAPSHOT"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Inferred Url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "absence-api-controller",
+      "description": "Absence Api Controller"
+    },
+    {
+      "name": "availability-api-controller",
+      "description": "Availability Api Controller"
+    },
+    {
+      "name": "department-api-controller",
+      "description": "Department Api Controller"
+    },
+    {
+      "name": "person-api-controller",
+      "description": "Person Api Controller"
+    },
+    {
+      "name": "public-holiday-api-controller",
+      "description": "Public Holiday Api Controller"
+    },
+    {
+      "name": "sick-note-api-controller",
+      "description": "Sick Note Api Controller"
+    },
+    {
+      "name": "vacation-api-controller",
+      "description": "Vacation Api Controller"
+    },
+    {
+      "name": "vacation-overview-api-controller",
+      "description": "Vacation Overview Api Controller"
+    },
+    {
+      "name": "work-days-count-api-controller",
+      "description": "Work Days Count Api Controller"
+    }
+  ],
+  "paths": {
+    "/api/persons/{personId}/absences": {
+      "get": {
+        "tags": [
+          "absence-api-controller"
+        ],
+        "summary": "Get all absences for a certain period and person",
+        "description": "Get all absences for a certain period and person",
+        "operationId": "personsAbsencesUsingGET",
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "description": "ID of the person",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "start of interval to get absences from (inclusive)",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "end of interval to get absences from (inclusive)",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Type of absences, vacation or sick notes",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "SICK_NOTE",
+                "VACATION"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DayAbsencesDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/persons/{personId}/availabilities": {
+      "get": {
+        "tags": [
+          "availability-api-controller"
+        ],
+        "summary": "Get all availabilities for a certain period and person",
+        "description": "Get all availabilities for a certain period and person. Maximum allowed period per request is one month.",
+        "operationId": "personsAvailabilitiesUsingGET",
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "description": "id of the person",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "start of interval to get availabilities from (inclusive)",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "end of interval to get availabilities from (inclusive)",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvailabilityListDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": true
+      }
+    },
+    "/api/departments": {
+      "get": {
+        "tags": [
+          "department-api-controller"
+        ],
+        "summary": "Get all departments of the application",
+        "description": "Get all departments of the application",
+        "operationId": "departmentsUsingGET",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepartmentsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/persons": {
+      "get": {
+        "tags": [
+          "person-api-controller"
+        ],
+        "summary": "Get all active persons of the application",
+        "description": "Get all active persons of the application",
+        "operationId": "personsUsingGET",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PersonDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/persons/{id}": {
+      "get": {
+        "tags": [
+          "person-api-controller"
+        ],
+        "summary": "Get one active person by id",
+        "description": "Get one active person by id",
+        "operationId": "getPersonUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/persons/{personId}/public-holidays": {
+      "get": {
+        "tags": [
+          "public-holiday-api-controller"
+        ],
+        "summary": "Get all public holidays for a certain period",
+        "description": "Get all public holidays for a certain period. Information only reachable for users with role office and for own public holidays.",
+        "operationId": "personsPublicHolidaysUsingGET",
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "description": "ID of the person to get the public holidays for.",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Start date with pattern yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "End date with pattern yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicHolidaysDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/public-holidays": {
+      "get": {
+        "tags": [
+          "public-holiday-api-controller"
+        ],
+        "summary": "Get all public holidays for a certain period",
+        "description": "Get all public holidays for a certain period. Information only reachable for users with role office.",
+        "operationId": "getPublicHolidaysUsingGET",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Start date with pattern yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "End date with pattern yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicHolidaysDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/persons/{personId}/sicknotes": {
+      "get": {
+        "tags": [
+          "sick-note-api-controller"
+        ],
+        "summary": "Get all sick notes for a certain period and person",
+        "description": "Get all sick notes for a certain period and person. Information only reachable for users with role office and for own sicknotes.",
+        "operationId": "personsSickNotesUsingGET",
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "description": "ID of the person",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Start date with pattern yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "End date with pattern yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SickNotesDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/sicknotes": {
+      "get": {
+        "tags": [
+          "sick-note-api-controller"
+        ],
+        "summary": "Get all sick notes for a certain period",
+        "description": "Get all sick notes for a certain period. Information only reachable for users with role office.",
+        "operationId": "getSickNotesUsingGET",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Start date with pattern yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "End date with pattern yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SickNotesDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/persons/{id}/vacations": {
+      "get": {
+        "tags": [
+          "vacation-api-controller"
+        ],
+        "summary": "Get all allowed vacations for department members for the given person and the certain period",
+        "description": "Get all allowed vacations for department members for the given person and the certain period. All the waiting and allowed vacations of the departments the person is assigned to, are fetched. Information only reachable for users with role office and for your own data.",
+        "operationId": "getVacationsOfOthersOrDepartmentColleaguesUsingGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the person",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Start date with pattern yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "End date with pattern yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "ofDepartmentMembers",
+            "in": "query",
+            "description": "If defined returns only the vacations of the department members of the person",
+            "required": true,
+            "style": "form",
+            "allowReserved": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/VacationsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/vacationoverview": {
+      "get": {
+        "tags": [
+          "vacation-overview-api-controller"
+        ],
+        "summary": "Get Vacation-Overview Metadata",
+        "description": "Get Vacation-Overview metadata for all members of a department",
+        "operationId": "getHolidayOverviewUsingGET",
+        "parameters": [
+          {
+            "name": "selectedDepartment",
+            "in": "query",
+            "description": "selectedDepartment",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "selectedYear",
+            "in": "query",
+            "description": "selectedYear",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "selectedMonth",
+            "in": "query",
+            "description": "selectedMonth",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/VacationOverviewsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": true
+      }
+    },
+    "/api/persons/{personId}/workdays": {
+      "get": {
+        "tags": [
+          "work-days-count-api-controller"
+        ],
+        "summary": "Calculate the work days for a certain period and person",
+        "description": "The calculation depends on the working time of the person.",
+        "operationId": "personsWorkDaysUsingGET",
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "description": "ID of the person",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Start date with pattern yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "End date with pattern yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "length",
+            "in": "query",
+            "description": "Day Length",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "FULL",
+                "MORNING",
+                "NOON"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkDaysCountDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AvailabilityListDto": {
+        "title": "AvailabilityListDto",
+        "type": "object",
+        "properties": {
+          "availabilities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DayAvailability"
+            }
+          },
+          "personId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DayAbsenceDto": {
+        "title": "DayAbsenceDto",
+        "type": "object",
+        "properties": {
+          "absencePeriodName": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "dayLength": {
+            "type": "number",
+            "format": "bigdecimal"
+          },
+          "href": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "DayAbsencesDto": {
+        "title": "DayAbsencesDto",
+        "type": "object",
+        "properties": {
+          "absences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DayAbsenceDto"
+            }
+          }
+        }
+      },
+      "DayAvailability": {
+        "title": "DayAvailability",
+        "type": "object",
+        "properties": {
+          "availabilityRatio": {
+            "type": "number",
+            "format": "bigdecimal"
+          },
+          "date": {
+            "type": "string"
+          },
+          "timedAbsenceSpans": {
+            "$ref": "#/components/schemas/TimedAbsenceSpans"
+          }
+        }
+      },
+      "DayOfMonth": {
+        "title": "DayOfMonth",
+        "type": "object",
+        "properties": {
+          "dayNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dayText": {
+            "type": "string"
+          },
+          "typeOfDay": {
+            "type": "string",
+            "enum": [
+              "WEEKEND",
+              "WORKDAY"
+            ]
+          }
+        }
+      },
+      "DepartmentDto": {
+        "title": "DepartmentDto",
+        "type": "object",
+        "properties": {
+          "departmentHeads": {
+            "$ref": "#/components/schemas/PersonsDto"
+          },
+          "description": {
+            "type": "string"
+          },
+          "lastModification": {
+            "type": "string"
+          },
+          "members": {
+            "$ref": "#/components/schemas/PersonsDto"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "DepartmentsDto": {
+        "title": "DepartmentsDto",
+        "type": "object",
+        "properties": {
+          "departments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DepartmentDto"
+            }
+          }
+        }
+      },
+      "Links": {
+        "title": "Links",
+        "type": "object",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PersonDto": {
+        "title": "PersonDto",
+        "type": "object",
+        "properties": {
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "niceName": {
+            "type": "string"
+          }
+        }
+      },
+      "PersonsDto": {
+        "title": "PersonsDto",
+        "type": "object",
+        "properties": {
+          "persons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PersonDto"
+            }
+          }
+        }
+      },
+      "PublicHolidayDto": {
+        "title": "PublicHolidayDto",
+        "type": "object",
+        "properties": {
+          "absencePeriodName": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "dayLength": {
+            "type": "number",
+            "format": "bigdecimal"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "PublicHolidaysDto": {
+        "title": "PublicHolidaysDto",
+        "type": "object",
+        "properties": {
+          "publicHolidays": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicHolidayDto"
+            }
+          }
+        }
+      },
+      "SickNoteDto": {
+        "title": "SickNoteDto",
+        "type": "object",
+        "properties": {
+          "dayLength": {
+            "type": "number",
+            "format": "bigdecimal"
+          },
+          "from": {
+            "type": "string"
+          },
+          "person": {
+            "$ref": "#/components/schemas/PersonDto"
+          },
+          "status": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "SickNotesDto": {
+        "title": "SickNotesDto",
+        "type": "object",
+        "properties": {
+          "sickNotes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SickNoteDto"
+            }
+          }
+        }
+      },
+      "TimedAbsence": {
+        "title": "TimedAbsence",
+        "type": "object",
+        "properties": {
+          "partOfDay": {
+            "type": "string"
+          },
+          "ratio": {
+            "type": "number",
+            "format": "bigdecimal"
+          }
+        }
+      },
+      "TimedAbsenceSpans": {
+        "title": "TimedAbsenceSpans",
+        "type": "object",
+        "properties": {
+          "absencesList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimedAbsence"
+            }
+          }
+        }
+      },
+      "VacationDto": {
+        "title": "VacationDto",
+        "type": "object",
+        "properties": {
+          "dayLength": {
+            "type": "number",
+            "format": "bigdecimal"
+          },
+          "from": {
+            "type": "string"
+          },
+          "person": {
+            "$ref": "#/components/schemas/PersonDto"
+          },
+          "status": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "VacationOverviewDto": {
+        "title": "VacationOverviewDto",
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DayOfMonth"
+            }
+          },
+          "person": {
+            "$ref": "#/components/schemas/PersonDto"
+          },
+          "personID": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "VacationOverviewsDto": {
+        "title": "VacationOverviewsDto",
+        "type": "object",
+        "properties": {
+          "overviews": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VacationOverviewDto"
+            }
+          }
+        }
+      },
+      "VacationsDto": {
+        "title": "VacationsDto",
+        "type": "object",
+        "properties": {
+          "vacations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VacationDto"
+            }
+          }
+        }
+      },
+      "WorkDaysCountDto": {
+        "title": "WorkDaysCountDto",
+        "type": "object",
+        "properties": {
+          "workDays": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

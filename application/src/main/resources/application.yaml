@@ -1,0 +1,16 @@
+server:
+  port: 9090
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: urlaubsverwaltung-consumer
+            client-secret:
+        provider:
+          keycloak:
+            issuer-uri: https://keycloak-server/auth/realms/name
+
+urlaubsverwaltung-url: https://urlaubsverwaltung
